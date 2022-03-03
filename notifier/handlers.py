@@ -12,8 +12,8 @@ from worker import send_later
 async def send_mess(client_id: str, message: str,
                     date: Optional[str] = None) -> None:
     """
-    Send message to client socket, end write mess to sended buffer,
-    if client online, else write to buffer to send later.
+    Send message to client socket, end write mess to db as sended,
+    if client online, else write to db to send later.
     """
     conn_realtime = await open_pool()
 
