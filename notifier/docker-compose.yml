@@ -1,0 +1,43 @@
+version: "3.7"
+
+
+services:
+  redis:
+    image: redis:7.0-rc2-alpine
+
+  web:
+    build: .
+    ports:
+      - 8000:8000
+    command: poetry run uvicorn app:app --host 0.0.0.0 --reload
+    depends_on:
+      - redis
+    volumes:
+      - ./:/usr/src/app
+    env_file:
+      - ./.env
+
+  worker:
+    build: .
+    command: poetry run celery --app worker.celery_app worker
+    depends_on:
+      - web
+      - redis
+    volumes:
+      - ./:/usr/src/app
+    env_file:
+      - ./.env
+
+  flower:
+    build: .
+    command: poetry run celery --app=worker.celery_app flower
+    ports:
+      - 5555:5555
+    volumes:
+      - ./:/usr/src/app
+    env_file:
+      - ./.env
+    depends_on:
+      - web
+      - redis
+      - worker
