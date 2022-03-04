@@ -4,15 +4,16 @@ from typing import Optional
 from fastapi import WebSocketDisconnect
 from fastapi.responses import JSONResponse
 
-from db import add_to_send, add_to_sended, open_pool
-from managers import users_manager
+from db.mess_to_db import add_to_send, add_to_sended
+from db.pool import open_pool
+from services.managers import users_manager
 from worker import send_later
 
 
 async def send_mess(client_id: str, message: str,
                     date: Optional[str] = None) -> None:
     """
-    Send message to client socket, end write mess to db as sended,
+    Send message to client socket and write mess to db as sended,
     if client online, else write to db to send later.
     """
     conn_realtime = await open_pool()

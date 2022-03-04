@@ -2,11 +2,11 @@ import json
 
 from fastapi import Depends, FastAPI, WebSocket, WebSocketDisconnect
 
-from db import PAST_KEY, open_pool
-from handlers import mess_handler
-from managers import users_manager
-from schemas import Confirmation, Invite, Registration
-from token_handler import get_user_id
+from db.pool import PAST_KEY, open_pool
+from db.schemas import Confirmation, Delay, Invite, Registration
+from services.handlers import mess_handler, send_mess
+from services.managers import users_manager
+from services.token_encode import get_user_id
 
 app = FastAPI()
 
@@ -38,6 +38,12 @@ async def tourn_invite(inv: Invite, client_id: str = Depends(get_user_id)):
     return await mess_handler(client_id, inv.message, inv.date)
 
 
+@app.post('/delay')
+async def delay(mess: Delay):
+    """Send delayed messages."""
+    return await send_mess(mess.client_id, mess.message, mess.date)
+
+
 @app.websocket("/realtime")
 async def user_accaunt(websocket: WebSocket,
                        client_id: str = Depends(get_user_id)):
@@ -56,8 +62,8 @@ async def user_accaunt(websocket: WebSocket,
 @app.get("/messages/{client_id}")
 async def user_sended_mess(client_id: str):
     """
-    Return all client sended messages
-    for the last month before last tournament.
+    Return all client sended messages for the last month
+    before last tournament.
     """
     conn = await open_pool()
     data = await conn.hget(PAST_KEY, client_id)

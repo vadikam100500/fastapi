@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class FakeTokenPayload(BaseModel):
-    user_id: int = None
+    user_id: int
 
 
 class Registration(BaseModel):
@@ -26,3 +26,16 @@ class Confirmation(Registration):
 
 class Invite(Confirmation):
     pass
+
+
+class Delay(Confirmation):
+    client_id: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "user_id": "Some id",
+                "message": "TEXT BODY",
+                "date": "2022-02-28 13:03:08.435389",
+            }
+        }

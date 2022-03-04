@@ -1,24 +1,8 @@
 import datetime as dt
 import json
-import os
 from typing import Optional
 
-import aioredis
-from dotenv import load_dotenv
-
-load_dotenv()
-
-REDIS_URL = os.getenv('REDIS_URL')
-PAST_KEY = os.getenv('PAST_KEY')
-
-
-async def open_pool():
-    try:
-        return await aioredis.from_url(REDIS_URL, encoding='utf-8',
-                                       decode_responses=True)
-    except ConnectionError:
-        # some action for DevOps
-        pass
+from .pool import PAST_KEY
 
 
 def get_date(date: Optional[str] = None):
@@ -38,12 +22,10 @@ async def add_to_send(pool, client_id, message, date=None):
     await pool.hset(client_id, date, message)
 
 
-def check_for_actual(data: dict, new_date: str):
+async def check_for_actual(data: dict, new_date: str):
     """Delete old messages from data, because we can't set TTL."""
     new_date = dt.datetime.strptime(new_date, '%Y-%m-%d %H:%M:%S.%f')
     not_fresh = []
-    # i wouldn't make asyncio tasks here, because it's not by tor,
-    # if all ok, i remake it
     for date in data.keys():
         if (new_date
             - dt.datetime.strptime(date,
@@ -69,7 +51,7 @@ async def add_to_sended(pool, client_id, message, date=None):
     if data := await pool.hget(PAST_KEY, client_id):
         old_data = json.loads(data)
         # we can set ttl only for whole user =(
-        data = check_for_actual(old_data, date)
+        data = await check_for_actual(old_data, date)
         data.update(new_data)
     else:
         data = new_data

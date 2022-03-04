@@ -2,7 +2,8 @@ from typing import Dict
 
 from fastapi import WebSocket, WebSocketDisconnect
 
-from db import add_to_sended, open_pool
+from db.mess_to_db import add_to_sended
+from db.pool import open_pool
 
 
 class UserManager:
@@ -34,8 +35,7 @@ class UserManager:
         except WebSocketDisconnect:
             await conn_realtime.close()
             return
-        else:
-            await conn_realtime.close()
+        await conn_realtime.close()
 
 
 users_manager = UserManager()

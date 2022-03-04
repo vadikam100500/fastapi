@@ -17,10 +17,10 @@ else set them to db and send mess, when user online again.
 
 ## Local deploy
 
-+ Set secrets in .env like in env.example with your data:
++ Set secrets in .env like in infra/env.example with your data:
 + [Install docker ](https://docs.docker.com/get-docker/)
 + If you don't need any files or dirs in container, you can set them in .dockerignore
-+ Run:
++ In dir infra run:
     ```sh
     $ docker-compose up
     ```

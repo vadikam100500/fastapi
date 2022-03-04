@@ -3,7 +3,7 @@ import os
 import jwt
 from dotenv import load_dotenv
 
-from schemas import FakeTokenPayload
+from db.schemas import FakeTokenPayload
 
 load_dotenv()
 
@@ -18,5 +18,5 @@ async def get_user_id(token: str) -> str:
 
 
 def create_access_token(data: dict):
-    """Encode user_id to token for worker."""
+    """Encode user_id to token."""
     return jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)

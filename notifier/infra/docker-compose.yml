@@ -6,7 +6,7 @@ services:
     image: redis:7.0-rc2-alpine
 
   web:
-    build: .
+    build: ..
     ports:
       - 8000:8000
     command: poetry run uvicorn app:app --host 0.0.0.0 --reload
@@ -18,7 +18,7 @@ services:
       - ./.env
 
   worker:
-    build: .
+    build: ..
     command: poetry run celery --app worker.celery_app worker
     depends_on:
       - web
@@ -29,7 +29,7 @@ services:
       - ./.env
 
   flower:
-    build: .
+    build: ..
     command: poetry run celery --app=worker.celery_app flower
     ports:
       - 5555:5555
