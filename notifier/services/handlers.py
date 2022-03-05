@@ -39,6 +39,7 @@ async def mess_handler(client_id: str, message: str,
 
     I Hope that messages not repeating, because i don't validate them.
     """
+    response = JSONResponse(status_code=201)
     if send_date:
         # UTC datetime
         try:
@@ -50,9 +51,6 @@ async def mess_handler(client_id: str, message: str,
         if date_as_dt > dt.datetime.now():
             send_later.apply_async((client_id, message, send_date),
                                    eta=date_as_dt)
-        else:
-            await send_mess(client_id, message, send_date)
-    else:
-        await send_mess(client_id, message)
-
-    return JSONResponse(status_code=201)
+            return response
+    await send_mess(client_id, message, send_date)
+    return response
