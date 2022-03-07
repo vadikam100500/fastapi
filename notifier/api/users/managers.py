@@ -2,8 +2,8 @@ from typing import Dict
 
 from fastapi import WebSocket, WebSocketDisconnect
 
-from db.mess_to_db import add_to_sended
-from db.pool import open_pool
+from ..messages.utils import add_to_sended
+from ..utils.db import open_pool
 
 
 class UserManager:

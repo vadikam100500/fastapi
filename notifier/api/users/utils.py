@@ -3,7 +3,7 @@ import os
 import jwt
 from dotenv import load_dotenv
 
-from db.schemas import FakeTokenPayload
+from .schemas import FakeTokenPayload
 
 load_dotenv()
 

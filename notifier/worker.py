@@ -1,7 +1,7 @@
 import requests
 from celery import Celery
 
-from db.pool import MAIN_URL, REDIS_URL
+from api.utils.db import MAIN_URL, REDIS_URL
 
 celery_app = Celery('worker', backend=REDIS_URL, broker=REDIS_URL)
 

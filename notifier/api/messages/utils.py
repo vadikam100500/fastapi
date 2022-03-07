@@ -2,7 +2,7 @@ import datetime as dt
 import json
 from typing import Optional
 
-from .pool import PAST_KEY
+from ..utils.db import PAST_KEY
 
 
 def get_date(date: Optional[str] = None):
